@@ -1,5 +1,6 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import { messageOf } from "@shared/error";
 import type { VideoInfo } from "@shared/types";
 import { binaryPaths } from "./binary-paths";
 
@@ -40,7 +41,7 @@ export async function readVideoInfo(filePath: string): Promise<VideoInfo> {
     filePath,
   ];
 
-  const { stdout } = await execFileAsync(ffprobe, args, { maxBuffer: 1024 * 1024 });
+  const stdout = await runFfprobe(ffprobe, args);
   const json = JSON.parse(stdout) as FfprobeJson;
   const stream = json.streams?.[0];
 
@@ -52,6 +53,30 @@ export async function readVideoInfo(filePath: string): Promise<VideoInfo> {
     colorTransfer: stream?.color_transfer ?? "",
     codecName: stream?.codec_name ?? "",
   };
+}
+
+/**
+ * ffprobeを実行して標準出力を返す
+ *
+ * @param ffprobe - ffprobeの絶対パス
+ * @param args - ffprobeへ渡す引数
+ * @returns ffprobeが出したJSON
+ */
+async function runFfprobe(ffprobe: string, args: string[]): Promise<string> {
+  try {
+    const { stdout } = await execFileAsync(ffprobe, args, { maxBuffer: 1024 * 1024 });
+    return stdout;
+  } catch (error) {
+    const stderr = error instanceof Error && "stderr" in error ? String(error.stderr) : "";
+    const lastLine = stderr
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .pop();
+
+    // stderrが空になるのは起動自体に失敗したときなので、その場合は元のメッセージを使う
+    throw new Error(lastLine || messageOf(error));
+  }
 }
 
 /**

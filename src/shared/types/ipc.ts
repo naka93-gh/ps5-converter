@@ -71,6 +71,19 @@ export interface VerifyResult {
 }
 
 /**
+ * 変換1件の結果
+ *
+ * 1件の失敗はキューを止めないので例外にせず結果で返す
+ */
+export type ConvertResult =
+  /** 変換して出力まで書けた */
+  | { status: "converted" }
+  /** 中断で止めた */
+  | { status: "canceled" }
+  /** ffmpegが異常終了した */
+  | { status: "failed"; reason: string };
+
+/**
  * mainとやり取りするチャンネル名
  */
 export const IPC = {
@@ -97,8 +110,7 @@ export interface Api {
   loadConfig(): Promise<AppConfig>;
   saveConfig(config: AppConfig): Promise<void>;
   scan(inputDir: string, outputDir: string): Promise<FileEntry[]>;
-  /** 失敗した理由を返す。成功したときはnull */
-  convertOne(entry: FileEntry): Promise<string | null>;
+  convertOne(entry: FileEntry): Promise<ConvertResult>;
   verify(entry: FileEntry): Promise<VerifyResult>;
   cancel(): Promise<void>;
   reveal(path: string): Promise<void>;

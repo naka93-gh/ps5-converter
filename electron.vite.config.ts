@@ -2,7 +2,7 @@ import { resolve } from "node:path";
 import angular from "@analogjs/vite-plugin-angular";
 import { defineConfig } from "electron-vite";
 
-// main/preload/rendererのどこからでも同じ型定義を参照する
+// main/preload/rendererのどこからでも同じ型と共通処理を参照する
 const sharedAlias = { "@shared": resolve("src/shared") };
 
 export default defineConfig({

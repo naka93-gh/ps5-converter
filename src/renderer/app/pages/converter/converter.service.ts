@@ -1,4 +1,5 @@
 import { Injectable, inject } from "@angular/core";
+import { messageOf } from "@shared/error";
 import type { FileEntry } from "@shared/types";
 import { ConfigService } from "../../shared/config.service";
 import { ConfigStore } from "../../shared/config.store";
@@ -67,7 +68,7 @@ export class ConverterService {
       this.store.selectedPath.set(null);
       this.store.notice.set(entries.length === 0 ? "webmが見つかりません" : "");
     } catch (error) {
-      this.store.notice.set(toMessage(error));
+      this.store.notice.set(messageOf(error));
     } finally {
       this.store.scanning.set(false);
     }
@@ -90,17 +91,17 @@ export class ConverterService {
         if (!isWaiting(entry)) continue;
 
         this.store.setStatus(entry.input.path, { phase: "converting", progress: 0 });
-        const error = await window.api.convertOne(entry);
+        const result = await window.api.convertOne(entry);
 
-        if (error) {
-          // 中断は失敗ではないので、次回の再実行で拾えるよう待ちへ戻す
-          if (this.store.canceling()) {
-            this.store.setStatus(entry.input.path, { phase: "canceled" });
-            break;
-          }
+        // 中断は失敗ではないので、次回の再実行で拾えるよう待ちへ戻す
+        if (result.status === "canceled") {
+          this.store.setStatus(entry.input.path, { phase: "canceled" });
+          break;
+        }
 
+        if (result.status === "failed") {
           failed++;
-          this.store.setStatus(entry.input.path, { phase: "failed", reason: error });
+          this.store.setStatus(entry.input.path, { phase: "failed", reason: result.reason });
           continue;
         }
 
@@ -119,7 +120,7 @@ export class ConverterService {
         this.store.canceling() ? `中断しました（変換 ${converted}件）` : `変換 ${converted}件 / 失敗 ${failed}件`,
       );
     } catch (error) {
-      this.store.notice.set(toMessage(error));
+      this.store.notice.set(messageOf(error));
     } finally {
       this.store.converting.set(false);
       this.store.canceling.set(false);
@@ -151,17 +152,12 @@ export class ConverterService {
   private async runVerify(entry: FileEntry): Promise<void> {
     this.store.setStatus(entry.input.path, { phase: "verifying" });
 
-    const { detail, output } = await window.api.verify(entry);
-    this.store.finishVerify(entry.input.path, output, detail);
+    try {
+      const { detail, output } = await window.api.verify(entry);
+      this.store.finishVerify(entry.input.path, output, detail);
+    } catch (error) {
+      // 1本読めなかっただけでキュー全体を止めない
+      this.store.setStatus(entry.input.path, { phase: "failed", reason: messageOf(error) });
+    }
   }
-}
-
-/**
- * 例外を画面に出せる文字列にする
- *
- * @param error - 捕まえた例外
- * @returns 表示に使うメッセージ
- */
-function toMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
 }

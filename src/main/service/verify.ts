@@ -1,3 +1,4 @@
+import { attempt } from "@shared/error";
 import type { FileEntry, VerifyCheck, VerifyResult, VideoInfo } from "@shared/types";
 import { readVideoInfo } from "../infra/ffmpeg/video-info";
 import { sizeOf } from "../infra/fs";
@@ -33,26 +34,16 @@ const EXPECTED_TRANSFER = "smpte2084";
 export async function verify(entry: FileEntry): Promise<VerifyResult> {
   const sizeBytes = await sizeOf(entry.output.path);
 
-  try {
-    // 走査時に取れていれば使い回し、無ければ元ファイルを読み直す
-    const source = entry.input.info ?? (await readVideoInfo(entry.input.path));
-    const info = await readVideoInfo(entry.output.path);
+  // 走査時に取れていれば使い回し、無ければ元ファイルを読み直す
+  const source = entry.input.info ?? (await attempt("元ファイルを読めません", () => readVideoInfo(entry.input.path)));
+  const info = await attempt("出力を読めません", () => readVideoInfo(entry.output.path));
 
-    const checks = buildChecks(source, info);
+  const checks = buildChecks(source, info);
 
-    return {
-      detail: { ok: checks.every((check) => check.ok), checks },
-      output: { path: entry.output.path, sizeBytes, info },
-    };
-  } catch (error) {
-    // IPC越しだとErrorが読めなくなるので、ここでテキストに変換
-    const message = error instanceof Error ? error.message : String(error);
-
-    return {
-      detail: { ok: false, checks: [{ label: "確認", ok: false, detail: message, reason: message }] },
-      output: { path: entry.output.path, sizeBytes, info: null },
-    };
-  }
+  return {
+    detail: { ok: checks.every((check) => check.ok), checks },
+    output: { path: entry.output.path, sizeBytes, info },
+  };
 }
 
 /**

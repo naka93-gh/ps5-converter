@@ -1,5 +1,6 @@
 import { mkdir, readdir, stat } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
+import { attempt } from "@shared/error";
 import type { EntryStatus, FileEntry } from "@shared/types";
 import { tryReadVideoInfo } from "../infra/ffmpeg/video-info";
 import { sizeOf } from "../infra/fs";
@@ -12,10 +13,10 @@ import { sizeOf } from "../infra/fs";
  * @returns 名前順に並べたファイル一覧
  */
 export async function scan(inputDir: string, outputDir: string): Promise<FileEntry[]> {
-  await mkdir(outputDir, { recursive: true });
+  await attempt("出力ディレクトリを作れません", () => mkdir(outputDir, { recursive: true }));
 
   // PS5の録画は日時が名前に入るため、名前順が撮影順になる
-  const names = await readdir(inputDir);
+  const names = await attempt("入力ディレクトリを読めません", () => readdir(inputDir));
   const webmNames = names.filter((name) => extname(name).toLowerCase() === ".webm").sort();
 
   return Promise.all(webmNames.map((name) => buildEntry(inputDir, outputDir, name)));
@@ -34,7 +35,7 @@ async function buildEntry(inputDir: string, outputDir: string, fileName: string)
   const inputPath = join(inputDir, fileName);
   const outputPath = join(outputDir, `${name}.mp4`);
 
-  const info = await stat(inputPath);
+  const info = await attempt(`${fileName}の情報を読めません`, () => stat(inputPath));
   const outputSizeBytes = await sizeOf(outputPath);
   const status = decideStatus(outputSizeBytes, info.size);
 

@@ -22,10 +22,18 @@ export class Encoder {
   private currentChild: ChildProcess | null = null;
 
   /**
+   * killで止めたかどうか
+   */
+  private killed = false;
+
+  /**
    * 実行中のffmpegプロセスを止める
    */
   kill(): void {
-    this.currentChild?.kill("SIGKILL");
+    if (!this.currentChild) return;
+
+    this.killed = true;
+    this.currentChild.kill("SIGKILL");
   }
 
   /**
@@ -38,6 +46,7 @@ export class Encoder {
    * @param durationSec - 元ファイルの尺。渡したときだけ進捗を通知する
    * @param bitrate - ビットレート
    * @param onProgress - 進捗を0〜1で受け取る関数
+   * @returns 書き出せたらdone、killで止めたらcanceled
    */
   async encode(
     inputPath: string,
@@ -45,10 +54,12 @@ export class Encoder {
     durationSec: number | undefined,
     bitrate: EncodeBitrate,
     onProgress: (progress: number) => void,
-  ): Promise<void> {
+  ): Promise<"done" | "canceled"> {
     const ffmpeg = binaryPaths.get("ffmpeg");
     const partPath = `${outputPath}.part`;
 
+    // 前回のkillを持ち越さないよう、走らせる前に戻す
+    this.killed = false;
     const child = spawn(ffmpeg, buildEncodeArgs(inputPath, partPath, bitrate), { stdio: ["ignore", "pipe", "pipe"] });
     this.currentChild = child;
 
@@ -73,11 +84,15 @@ export class Encoder {
     // 中途半端な.partを残すと次回のスキャンが誤判定する
     if (code !== 0) {
       await rm(partPath, { force: true });
+      if (this.killed) return "canceled";
+
       throw new Error(lastMeaningfulLine(stderrTail) || `ffmpegが終了コード${code}で終わりました`);
     }
 
     await rename(partPath, outputPath);
     onProgress(1);
+
+    return "done";
   }
 
   /**

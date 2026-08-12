@@ -1,3 +1,4 @@
+import { attempt } from "@shared/error";
 import type { AppConfig, BinaryStatus } from "@shared/types";
 import { loadConfig, saveConfig } from "../infra/config";
 import { binaryPaths } from "../infra/ffmpeg/binary-paths";
@@ -20,7 +21,7 @@ export async function readSettings(): Promise<AppConfig> {
  * @param config - 保存する設定
  */
 export async function writeSettings(config: AppConfig): Promise<void> {
-  await saveConfig(config);
+  await attempt("設定を保存できません", () => saveConfig(config));
   applyBinaryPaths(config);
 }
 

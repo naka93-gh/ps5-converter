@@ -1,4 +1,5 @@
-import type { FileEntry, ProgressPayload } from "@shared/types";
+import { messageOf } from "@shared/error";
+import type { ConvertResult, FileEntry, ProgressPayload } from "@shared/types";
 import { loadConfig } from "../infra/config";
 import { encoder } from "../infra/ffmpeg/encoder";
 
@@ -14,24 +15,28 @@ export function cancel(): void {
  *
  * @param entry - 変換するファイル
  * @param onProgress - 進捗を伝える関数
- * @returns 成功した場合はnull、失敗した場合は理由のテキスト
+ * @returns 変換できたか、中断したか、失敗したか
  */
-// TODO: リターンの形式を変更する
 export async function convertOne(
   entry: FileEntry,
   onProgress: (payload: ProgressPayload) => void,
-): Promise<string | null> {
+): Promise<ConvertResult> {
   try {
     // 変換途中で設定が変更された場合でも次の変換から反映できるように1件ごとにConfigを読み込む
     const config = await loadConfig();
 
     // どのファイルの進捗かをレンダラー側で必要とするので、パスを付与
-    await encoder.encode(entry.input.path, entry.output.path, entry.input.info?.durationSec, config, (progress) =>
-      onProgress({ inputPath: entry.input.path, progress }),
+    const result = await encoder.encode(
+      entry.input.path,
+      entry.output.path,
+      entry.input.info?.durationSec,
+      config,
+      (progress) => onProgress({ inputPath: entry.input.path, progress }),
     );
-    return null;
+
+    return result === "canceled" ? { status: "canceled" } : { status: "converted" };
   } catch (error) {
-    // IPC越しだとErrorが読めなくなるので、ここでテキストに変換
-    return error instanceof Error ? error.message : String(error);
+    // 1件こけてもキューは進めたいので、例外にせず結果として返す
+    return { status: "failed", reason: `変換に失敗しました: ${messageOf(error)}` };
   }
 }
