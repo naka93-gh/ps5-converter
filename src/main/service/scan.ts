@@ -2,6 +2,7 @@ import { mkdir, readdir, stat } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
 import type { EntryStatus, FileEntry } from "@shared/types";
 import { tryReadVideoInfo } from "../infra/ffmpeg/video-info";
+import { sizeOf } from "../infra/fs";
 
 /**
  * 入力ディレクトリのwebmを走査して、変換前に状態を確定させる
@@ -62,19 +63,4 @@ function decideStatus(outputSizeBytes: number | null, sizeBytes: number): EntryS
   if (sizeBytes === 0) return { phase: "skipped", reason: "0バイト（コピー中の可能性）" };
   if (outputSizeBytes !== null) return { phase: "unverified" };
   return { phase: "waiting" };
-}
-
-/**
- * ファイルのサイズを調べる
- *
- * @param path - 調べるファイル
- * @returns バイト数、ファイルが無ければnull
- */
-async function sizeOf(path: string): Promise<number | null> {
-  try {
-    const info = await stat(path);
-    return info.size;
-  } catch {
-    return null;
-  }
 }

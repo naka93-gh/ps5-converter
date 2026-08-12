@@ -1,6 +1,6 @@
-import { stat } from "node:fs/promises";
 import type { FileEntry, VerifyCheck, VerifyResult, VideoInfo } from "@shared/types";
 import { readVideoInfo } from "../infra/ffmpeg/video-info";
+import { sizeOf } from "../infra/fs";
 
 /**
  * 尺のずれをどこまで許すかの値
@@ -85,19 +85,4 @@ function buildChecks(source: VideoInfo, output: VideoInfo): VerifyCheck[] {
       reason: `尺が${gap.toFixed(1)}秒ずれている`,
     },
   ];
-}
-
-/**
- * ファイルのサイズを調べる
- *
- * @param path - 調べるファイル
- * @returns バイト数、ファイルが無ければnull
- */
-async function sizeOf(path: string): Promise<number | null> {
-  try {
-    const info = await stat(path);
-    return info.size;
-  } catch {
-    return null;
-  }
 }
