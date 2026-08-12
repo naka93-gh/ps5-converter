@@ -1,0 +1,84 @@
+:host {
+  display: block;
+  max-width: 620px;
+  padding: 22px;
+}
+
+.lead {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 20px;
+}
+
+.big {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.cap {
+  font-size: var(--fs-s);
+  color: var(--t2);
+}
+
+.pickers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 420px;
+}
+
+.pick {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-l);
+  background: var(--s2);
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--ease),
+    background-color var(--ease);
+
+  &:hover {
+    border-color: var(--acc);
+    background: var(--s3);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--acc);
+    outline-offset: 1px;
+  }
+
+  app-icon {
+    color: var(--t3);
+  }
+}
+
+.pick-key {
+  flex: none;
+  width: 28px;
+  font-size: var(--fs-xs);
+  color: var(--t2);
+}
+
+.pick-val {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-s);
+  color: var(--t3);
+
+  // 選び終えた側はパスをそのまま出す
+  .set & {
+    font-family: var(--font-mono);
+    color: var(--t);
+  }
+}

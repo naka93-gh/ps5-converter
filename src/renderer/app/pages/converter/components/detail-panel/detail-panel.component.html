@@ -2,7 +2,9 @@
   <h2>{{ entry().name }}</h2>
   <span class="pill" [class]="status().tone">{{ status().label }}</span>
 </div>
-<p class="sub">{{ subtitle() }}</p>
+@if (subtitle()) {
+  <p class="sub" [class.bad]="status().tone === 'bad'">{{ subtitle() }}</p>
+}
 
 @if (entry().status.phase === "converting") {
   <div class="live">
@@ -19,10 +21,8 @@
     <h3>検証</h3>
     <div class="checks">
       @for (check of verify.checks; track check.label) {
-        <div class="check">
-          <span class="mark" [class.bad]="!check.ok">{{
-            check.ok ? "✓" : "✕"
-          }}</span>
+        <div class="check" [class.bad]="!check.ok">
+          <span class="mark">{{ check.ok ? "✓" : "✕" }}</span>
           <span class="k">{{ check.label }}</span>
           <span class="v">{{ check.detail }}</span>
         </div>
@@ -33,55 +33,76 @@
 
 <section>
   <h3>元ファイルと出力</h3>
-  <div class="compare">
-    <dl>
-      <dt></dt>
-      <dd class="hd">元</dd>
-      <dd class="hd">出力</dd>
-
-      <dt>形式</dt>
-      <dd>{{ entry().input.info?.codecName || "-" }}</dd>
-      <dd>{{ entry().output.info?.codecName || "-" }}</dd>
-
-      <dt>解像度</dt>
-      <dd>{{ size(entry().input.info?.width, entry().input.info?.height) }}</dd>
-      <dd>
-        {{ size(entry().output.info?.width, entry().output.info?.height) }}
-      </dd>
-
-      <dt>HDR</dt>
-      <dd>{{ entry().input.info?.colorTransfer || "-" }}</dd>
-      <dd>{{ entry().output.info?.colorTransfer || "-" }}</dd>
-
-      <dt>尺</dt>
-      <dd>{{ formatDuration(entry().input.info?.durationSec) }}</dd>
-      <dd>{{ formatDuration(entry().output.info?.durationSec) }}</dd>
-
-      <dt>サイズ</dt>
-      <dd>{{ formatSize(entry().input.sizeBytes) }}</dd>
-      <dd>{{ formatSize(entry().output.sizeBytes) }}</dd>
-    </dl>
-  </div>
+  <table class="compare">
+    <thead>
+      <tr>
+        <th></th>
+        <th>元</th>
+        <th class="arrow"></th>
+        <th>出力</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>形式</th>
+        <td>{{ entry().input.info?.codecName || "-" }}</td>
+        <td class="arrow">→</td>
+        <td>{{ entry().output.info?.codecName || "-" }}</td>
+      </tr>
+      <tr>
+        <th>解像度</th>
+        <td>{{ size(entry().input.info?.width, entry().input.info?.height) }}</td>
+        <td class="arrow">→</td>
+        <td>{{ size(entry().output.info?.width, entry().output.info?.height) }}</td>
+      </tr>
+      <tr>
+        <th>HDR</th>
+        <td>{{ entry().input.info?.colorTransfer || "-" }}</td>
+        <td class="arrow">→</td>
+        <td>{{ entry().output.info?.colorTransfer || "-" }}</td>
+      </tr>
+      <tr>
+        <th>尺</th>
+        <td>{{ formatDuration(entry().input.info?.durationSec) }}</td>
+        <td class="arrow">→</td>
+        <td>{{ formatDuration(entry().output.info?.durationSec) }}</td>
+      </tr>
+      <tr>
+        <th>サイズ</th>
+        <td>{{ formatSize(entry().input.sizeBytes) }}</td>
+        <td class="arrow">→</td>
+        <td>{{ formatSize(entry().output.sizeBytes) }}</td>
+      </tr>
+    </tbody>
+  </table>
 </section>
 
 <section>
   <h3>場所</h3>
   <div class="paths">
-    <button
-      type="button"
-      class="path"
-      (click)="converter.reveal(entry().input.path)"
-    >
-      {{ entry().input.path }}
-    </button>
-    @if (entry().output.sizeBytes !== null) {
+    <div class="path">
+      <span class="path-key">元</span>
+      <span class="path-val" [title]="entry().input.path">{{ inputDir() }}</span>
       <button
         type="button"
-        class="path"
-        (click)="converter.reveal(entry().output.path)"
+        class="path-act"
+        (click)="converter.reveal(entry().input.path)"
       >
-        {{ entry().output.path }}
+        Finderで開く
       </button>
+    </div>
+    @if (entry().output.sizeBytes !== null) {
+      <div class="path">
+        <span class="path-key">出力</span>
+        <span class="path-val" [title]="entry().output.path">{{ outputDir() }}</span>
+        <button
+          type="button"
+          class="path-act"
+          (click)="converter.reveal(entry().output.path)"
+        >
+          Finderで開く
+        </button>
+      </div>
     }
   </div>
 </section>

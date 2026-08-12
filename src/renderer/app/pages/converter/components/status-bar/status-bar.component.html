@@ -1,0 +1,33 @@
+@let counts = store.counts();
+
+<div class="bar">
+  @if (counts.done > 0) {
+    <i class="done" [style.flex]="counts.done"></i>
+  }
+  @if (counts.pending > 0) {
+    <i class="pending" [style.flex]="counts.pending"></i>
+  }
+  @if (counts.ng > 0) {
+    <i class="ng" [style.flex]="counts.ng"></i>
+  }
+  @if (counts.invalid > 0) {
+    <i class="invalid" [style.flex]="counts.invalid"></i>
+  }
+</div>
+
+<div class="stat done">
+  <b>{{ counts.done }}</b>
+  <span>変換済み</span>
+</div>
+<div class="stat pending">
+  <b>{{ counts.pending }}</b>
+  <span>待機</span>
+</div>
+<div class="stat ng" [class.zero]="counts.ng === 0">
+  <b>{{ counts.ng }}</b>
+  <span>要確認</span>
+</div>
+<div class="stat invalid" [class.zero]="counts.invalid === 0">
+  <b>{{ counts.invalid }}</b>
+  <span>対象外</span>
+</div>

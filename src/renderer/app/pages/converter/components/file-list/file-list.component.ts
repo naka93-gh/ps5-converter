@@ -1,6 +1,6 @@
 import { Component, inject } from "@angular/core";
 import type { FileEntry } from "@shared/types";
-import { statusOf } from "../../../../shared/entry";
+import { progressOf, statusOf } from "../../../../shared/entry";
 import { formatDuration } from "../../../../shared/format";
 import { ConverterStore } from "../../store/converter.store";
 
@@ -22,6 +22,7 @@ export class FileListComponent {
   readonly store = inject(ConverterStore);
 
   protected readonly statusOf = statusOf;
+  protected readonly progressOf = progressOf;
 
   /**
    * 幅が足りないときに省略してよい前半

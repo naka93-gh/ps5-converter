@@ -1,7 +1,7 @@
 import { Component, computed, inject, input } from "@angular/core";
 import type { FileEntry } from "@shared/types";
 import { reasonOf, statusOf } from "../../../../shared/entry";
-import { formatDuration, formatElapsed, formatSize } from "../../../../shared/format";
+import { formatDuration, formatElapsed, formatSize, splitPath } from "../../../../shared/format";
 import { ConverterService } from "../../converter.service";
 
 /**
@@ -30,23 +30,18 @@ export class DetailPanelComponent {
     return status.phase === "verified" ? status.detail : null;
   });
 
-  /** 名前の下に出す一行。落ちた理由があればそれを優先する */
+  /**
+   * 名前の下に出す一行
+   */
   readonly subtitle = computed(() => {
     const entry = this.entry();
-    const reason = reasonOf(entry);
-    if (reason) return reason;
-
-    switch (entry.status.phase) {
-      case "verified":
-        return "変換と検証がどちらも通りました";
-      case "unverified":
-        return "出力先に同じ名前のmp4があります";
-      case "waiting":
-        return "まだ変換していません";
-      default:
-        return "";
-    }
+    return entry.status.phase === "canceled" ? "" : reasonOf(entry);
   });
+
+  /** 元ファイルの置き場所 */
+  readonly inputDir = computed(() => splitPath(this.entry().input.path).head);
+  /** 出力の置き場所 */
+  readonly outputDir = computed(() => splitPath(this.entry().output.path).head);
 
   /** 元ファイルの尺 */
   readonly total = computed(() => formatDuration(this.entry().input.info?.durationSec));

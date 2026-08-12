@@ -43,6 +43,16 @@ export function statusOf(entry: FileEntry): StatusBadge {
 }
 
 /**
+ * 変換の進み具合
+ *
+ * @param entry - 対象のファイル
+ * @returns 0〜1。変換中でなければnull
+ */
+export function progressOf(entry: FileEntry): number | null {
+  return entry.status.phase === "converting" ? entry.status.progress : null;
+}
+
+/**
  * 変換の順番を待っているか
  *
  * 中断で待ちへ戻したものも含む

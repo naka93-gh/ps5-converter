@@ -8,18 +8,11 @@
 
 .head {
   flex: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 13px;
+  padding: 9px 12px;
   border-bottom: 1px solid var(--line);
-  font-size: 11.5px;
+  font-size: var(--fs-xs);
   color: var(--t2);
-
-  .ng {
-    margin-left: auto;
-    color: var(--bad);
-  }
+  font-variant-numeric: tabular-nums;
 }
 
 .list {
@@ -28,11 +21,12 @@
 }
 
 .row {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   width: 100%;
-  padding: 7px 13px;
+  padding: 7px 12px;
   border: 0;
   border-bottom: 1px solid var(--line);
   background: transparent;
@@ -40,8 +34,9 @@
   color: inherit;
   text-align: left;
   cursor: pointer;
+  transition: background-color var(--ease);
 
-  &:hover {
+  &:hover:not(.sel) {
     background: var(--s3);
   }
 
@@ -56,25 +51,35 @@
   }
 }
 
+// 済んだものは塗り、これからのものは輪郭だけにして、手付かずと区別する
 .tick {
   flex: none;
   width: 7px;
   height: 7px;
+  border: 1.5px solid var(--t3);
   border-radius: 50%;
-
-  // 既定はmuted。色が付くtoneだけ上書きする
-  background: var(--line);
+  box-sizing: border-box;
 
   &.ok {
+    border-color: var(--ok);
     background: var(--ok);
   }
 
   &.run {
+    border-color: var(--run);
     background: var(--run);
+    animation: blink 1.5s ease-in-out infinite;
   }
 
   &.bad {
+    border-color: var(--bad);
     background: var(--bad);
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.3;
   }
 }
 
@@ -83,7 +88,7 @@
   display: flex;
   min-width: 0;
   font-family: var(--font-mono);
-  font-size: 11.5px;
+  font-size: var(--fs-s);
 }
 
 .head-part {
@@ -99,13 +104,32 @@
 .right {
   flex: none;
   color: var(--t2);
-  font-size: 11.5px;
+  font-size: var(--fs-s);
   font-variant-numeric: tabular-nums;
+
+  &.run {
+    color: var(--run);
+    font-weight: 600;
+  }
+}
+
+// 行の高さを変えずに進み具合を出すため、下辺の罫線に重ねる
+.track {
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 2px;
+
+  > i {
+    display: block;
+    height: 100%;
+    background: var(--run);
+    transition: width 200ms linear;
+  }
 }
 
 .empty {
-  padding: 22px 13px;
+  padding: 24px 12px;
   color: var(--t3);
-  font-size: 12px;
+  font-size: var(--fs-s);
   text-align: center;
 }

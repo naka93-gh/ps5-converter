@@ -1,13 +1,9 @@
-<div class="head">
-  {{ store.counts().all }}件
-  @if (store.counts().ng > 0) {
-    <span class="ng">要確認 {{ store.counts().ng }}</span>
-  }
-</div>
+<div class="head">{{ store.counts().all }}件</div>
 
 <div class="list">
   @for (entry of store.entries(); track entry.input.path) {
     @let status = statusOf(entry);
+    @let progress = progressOf(entry);
     <button
       type="button"
       class="row"
@@ -25,7 +21,12 @@
         <span class="head-part">{{ head(entry.name) }}</span
         ><span class="tail-part">{{ tail(entry.name) }}</span>
       </span>
-      <span class="right">{{ right(entry) }}</span>
+      <span class="right" [class.run]="progress !== null">{{ right(entry) }}</span>
+
+      <!-- 変換中の行だけ、進み具合を行の下辺に重ねる -->
+      @if (progress !== null) {
+        <span class="track"><i [style.width.%]="progress * 100"></i></span>
+      }
     </button>
   } @empty {
     <p class="empty">ファイルがありません</p>

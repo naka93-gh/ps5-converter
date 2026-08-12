@@ -76,6 +76,22 @@ export class ConverterStore {
   readonly busy = computed(() => this.scanning() || this.converting());
 
   /**
+   * 今mainで処理している1件。走っていなければnull
+   */
+  readonly active = computed(
+    () =>
+      this.entries().find((entry) => entry.status.phase === "converting" || entry.status.phase === "verifying") ?? null,
+  );
+
+  /**
+   * 何件目を処理しているか。手を付け終えた数に今の1件を足す
+   */
+  readonly position = computed(() => {
+    const counts = this.counts();
+    return counts.all - counts.pending;
+  });
+
+  /**
    * 待機分と変換中の残りから、終わるまでのおおよその秒数を出す
    */
   readonly remainingSec = computed(() => {

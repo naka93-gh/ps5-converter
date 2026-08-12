@@ -3,7 +3,8 @@
   <!-- 変換画面と高さを揃える -->
   <header>
     <button type="button" class="btn back" (click)="closed.emit()">
-      ← 変換画面へ
+      <app-icon name="back" />
+      変換画面へ
     </button>
     <h1>設定</h1>
   </header>
@@ -16,24 +17,30 @@
       <h2>画質</h2>
       <label class="row">
         <span class="key">映像</span>
-        <input
-          type="number"
-          [value]="videoBitrateMbps()"
-          [attr.min]="range.video.min"
-          [attr.max]="range.video.max"
-          (input)="videoBitrateMbps.set(textOf($event))"
-        />
+        <span class="field">
+          <app-icon name="pencil" />
+          <input
+            type="number"
+            [value]="videoBitrateMbps()"
+            [attr.min]="range.video.min"
+            [attr.max]="range.video.max"
+            (input)="videoBitrateMbps.set(textOf($event))"
+          />
+        </span>
         <span class="unit">Mbps</span>
       </label>
       <label class="row">
         <span class="key">音声</span>
-        <input
-          type="number"
-          [value]="audioBitrateKbps()"
-          [attr.min]="range.audio.min"
-          [attr.max]="range.audio.max"
-          (input)="audioBitrateKbps.set(textOf($event))"
-        />
+        <span class="field">
+          <app-icon name="pencil" />
+          <input
+            type="number"
+            [value]="audioBitrateKbps()"
+            [attr.min]="range.audio.min"
+            [attr.max]="range.audio.max"
+            (input)="audioBitrateKbps.set(textOf($event))"
+          />
+        </span>
         <span class="unit">kbps</span>
       </label>
       <p class="note">
@@ -70,29 +77,33 @@
       @if (binaryMode() === "manual") {
         <label class="row">
           <span class="key">ffmpeg</span>
-          <input
-            type="text"
-            class="path"
-            spellcheck="false"
-            placeholder="/opt/homebrew/bin/ffmpeg"
-            [value]="ffmpegPath()"
-            (input)="ffmpegPath.set(textOf($event))"
-          />
+          <span class="field wide">
+            <app-icon name="pencil" />
+            <input
+              type="text"
+              spellcheck="false"
+              placeholder="/opt/homebrew/bin/ffmpeg"
+              [value]="ffmpegPath()"
+              (input)="ffmpegPath.set(textOf($event))"
+            />
+          </span>
         </label>
         <label class="row">
           <span class="key">ffprobe</span>
-          <input
-            type="text"
-            class="path"
-            spellcheck="false"
-            placeholder="/opt/homebrew/bin/ffprobe"
-            [value]="ffprobePath()"
-            (input)="ffprobePath.set(textOf($event))"
-          />
+          <span class="field wide">
+            <app-icon name="pencil" />
+            <input
+              type="text"
+              spellcheck="false"
+              placeholder="/opt/homebrew/bin/ffprobe"
+              [value]="ffprobePath()"
+              (input)="ffprobePath.set(textOf($event))"
+            />
+          </span>
         </label>
         <p class="note">絶対パスで指定してください。</p>
       } @else {
-        <p class="note">Homebrewの場所とPATHから順に探します</p>
+        <p class="note">Homebrewの場所とPATHから順に探します。</p>
       }
     </section>
   </div>

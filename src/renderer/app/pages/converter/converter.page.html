@@ -5,31 +5,44 @@
   }
 
   <!-- ヘッダーエリア -->
-  <!-- ディレクトリや変換状況を配置 -->
   <header>
     <div class="dirs">
       <button
         type="button"
         class="dir"
         [disabled]="store.busy()"
+        [title]="config.inputDir() ?? ''"
         (click)="converter.pickDir('input')"
       >
+        <app-icon name="folder" />
         <span class="key">入力</span>
-        <span class="val" [class.unset]="!config.inputDir()"
-          >{{ config.inputDir() ?? "選ぶ" }}</span
-        >
+        @if (config.inputDir()) {
+          <span class="val"
+            ><span class="val-head">{{ inputPath().head }}</span
+            ><span class="val-tail">{{ inputPath().tail }}</span></span
+          >
+        } @else {
+          <span class="val unset">選ぶ</span>
+        }
       </button>
       <span class="arrow">→</span>
       <button
         type="button"
         class="dir"
         [disabled]="store.busy()"
+        [title]="config.outputDir() ?? ''"
         (click)="converter.pickDir('output')"
       >
+        <app-icon name="folder" />
         <span class="key">出力</span>
-        <span class="val" [class.unset]="!config.outputDir()"
-          >{{ config.outputDir() ?? "選ぶ" }}</span
-        >
+        @if (config.outputDir()) {
+          <span class="val"
+            ><span class="val-head">{{ outputPath().head }}</span
+            ><span class="val-tail">{{ outputPath().tail }}</span></span
+          >
+        } @else {
+          <span class="val unset">選ぶ</span>
+        }
       </button>
     </div>
 
@@ -40,47 +53,64 @@
         [disabled]="store.busy()"
         (click)="settingsRequested.emit()"
       >
+        <app-icon name="gear" />
         設定
       </button>
+      <button
+        type="button"
+        class="btn"
+        [disabled]="!config.ready() || store.busy()"
+        (click)="converter.scan()"
+      >
+        <app-icon name="refresh" />
+        再読込
+      </button>
 
-      @if (store.notice()) {
-        <span class="notice">{{ store.notice() }}</span>
-      }
-
+      <!-- 変換の開始と中断は同じ位置で入れ替える -->
       @if (store.converting()) {
-        @if (!store.canceling()) {
-          <span class="notice">のこり {{ remaining() }}</span>
-        }
         <button
           type="button"
-          class="btn stop"
+          class="btn main stop"
           [disabled]="store.canceling()"
           (click)="converter.cancel()"
         >
+          <app-icon name="stop" />
           {{ store.canceling() ? "中断しています" : "中断する" }}
         </button>
       } @else {
         <button
           type="button"
-          class="btn"
-          [disabled]="!config.ready() || store.busy()"
-          (click)="converter.scan()"
-        >
-          読み込み直す
-        </button>
-        <button
-          type="button"
-          class="btn run"
+          class="btn main run"
           [disabled]="
             !config.ready() || store.busy() || store.counts().pending === 0
           "
           (click)="converter.convert()"
         >
-          変換する（{{ store.counts().pending }}件）
+          <app-icon name="play" />
+          変換する
         </button>
       }
     </div>
   </header>
+
+  <!-- 進行エリア -->
+  @if (store.converting()) {
+    <div class="live">
+      @if (store.active(); as entry) {
+        <span class="live-name">{{ entry.name }}</span>
+        <span class="live-step">{{ store.position() }} / {{ store.counts().all }}件</span>
+        <span class="live-rest">のこり {{ remaining() }}</span>
+        <span class="live-pct">{{ liveLabel() }}</span>
+      } @else {
+        <span class="live-name">準備しています</span>
+      }
+      <div class="track"><i [style.width.%]="liveWidth()"></i></div>
+    </div>
+  } @else if (store.notice()) {
+    <p class="live">
+      <span class="live-name">{{ store.notice() }}</span>
+    </p>
+  }
 
   <!-- コンテンツエリア -->
   <div class="body">
@@ -88,13 +118,19 @@
     <app-file-list />
 
     <!-- 右ペインのファイル詳細 -->
-    <!-- ファイルが未選択の場合は全体のサマリーを表示 -->
+    <!-- 選ぶ前は空だが、何も始められない状態のときだけ案内を出す -->
     <div class="detail">
       @if (store.selected(); as entry) {
         <app-detail-panel [entry]="entry" />
-      } @else {
-        <app-summary-panel />
+      } @else if (!config.dirsChosen()) {
+        <app-setup-panel />
       }
     </div>
   </div>
+
+  <!-- フッターエリア -->
+  <!-- 一覧をスクロールしても全体の内訳が読めるよう下端に固定する -->
+  @if (store.counts().all > 0) {
+    <app-status-bar />
+  }
 </main>

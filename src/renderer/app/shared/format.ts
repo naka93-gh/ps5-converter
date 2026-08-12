@@ -49,6 +49,19 @@ export function formatSize(bytes: number | null | undefined): string {
 }
 
 /**
+ * パスを分割する
+ *
+ * @param path - 表示するパス
+ * @returns 前半と、区切りから始まる末尾。区切りが無ければ前半は空文字
+ */
+export function splitPath(path: string): { head: string; tail: string } {
+  const index = path.lastIndexOf("/");
+  if (index <= 0) return { head: "", tail: path };
+
+  return { head: path.slice(0, index), tail: path.slice(index) };
+}
+
+/**
  * 残り時間を丸めて出す
  *
  * @param seconds - 残りの秒数

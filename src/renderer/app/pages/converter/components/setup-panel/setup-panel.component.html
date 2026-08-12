@@ -1,0 +1,27 @@
+<div class="lead">
+  <span class="big">ディレクトリを選んでください</span>
+  <span class="cap">入力と出力を決めると読み込みが始まります</span>
+</div>
+
+<div class="pickers">
+  <button
+    type="button"
+    class="pick"
+    [class.set]="config.inputDir()"
+    (click)="converter.pickDir('input')"
+  >
+    <app-icon name="folder" />
+    <span class="pick-key">入力</span>
+    <span class="pick-val">{{ config.inputDir() ?? "webmのあるフォルダを選ぶ" }}</span>
+  </button>
+  <button
+    type="button"
+    class="pick"
+    [class.set]="config.outputDir()"
+    (click)="converter.pickDir('output')"
+  >
+    <app-icon name="folder" />
+    <span class="pick-key">出力</span>
+    <span class="pick-val">{{ config.outputDir() ?? "mp4を書き出すフォルダを選ぶ" }}</span>
+  </button>
+</div>

@@ -11,9 +11,10 @@ main {
 
 .alert {
   margin: 0;
-  padding: 9px 16px;
+  padding: 10px 16px;
   background: var(--bad-bg);
   color: var(--bad);
+  font-size: var(--fs-s);
 }
 
 header {
@@ -21,7 +22,7 @@ header {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 14px;
+  padding: 10px 16px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -36,20 +37,24 @@ header {
 .dir {
   flex: 1;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
   min-width: 0;
-  padding: 4px 10px;
+  padding: 5px 10px;
   border: 1px solid transparent;
-  border-radius: 6px;
+  border-radius: var(--r-m);
   background: var(--s2);
   font: inherit;
   color: inherit;
   text-align: left;
   cursor: pointer;
+  transition:
+    background-color var(--ease),
+    border-color var(--ease);
 
   &:hover:not(:disabled) {
     border-color: var(--line);
+    background: var(--s3);
   }
 
   &:disabled {
@@ -60,35 +65,46 @@ header {
     outline: 2px solid var(--acc);
     outline-offset: 1px;
   }
+
+  app-icon {
+    color: var(--t3);
+  }
 }
 
 .key {
   flex: none;
   padding-right: 8px;
   border-right: 1px solid var(--line);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--t2);
 }
 
 .val {
+  display: flex;
+  min-width: 0;
   font-family: var(--font-mono);
-  font-size: 11.5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  direction: rtl;
-  text-align: left;
+  font-size: var(--fs-s);
 
   &.unset {
     color: var(--t3);
-    direction: ltr;
   }
+}
+
+// 末尾のディレクトリ名は残したいので、縮むのは前半だけにする
+.val-head {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.val-tail {
+  flex: none;
 }
 
 .arrow {
   flex: none;
   color: var(--t3);
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 
 .acts {
@@ -98,23 +114,33 @@ header {
   gap: 8px;
 }
 
-.notice {
-  font-size: 11.5px;
-  color: var(--t2);
-}
-
 .btn {
-  padding: 4px 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--r-m);
   background: var(--s);
   font: inherit;
-  font-size: 12.5px;
+  font-size: var(--fs-s);
   color: inherit;
   cursor: pointer;
+  transition:
+    background-color var(--ease),
+    border-color var(--ease),
+    opacity var(--ease);
+
+  app-icon {
+    color: var(--t2);
+  }
 
   &:hover:not(:disabled) {
     background: var(--s2);
+  }
+
+  &:active:not(:disabled) {
+    background: var(--s3);
   }
 
   &:disabled {
@@ -127,20 +153,88 @@ header {
     outline-offset: 1px;
   }
 
+  // 開始と中断は入れ替わるので、文言が変わっても幅が動かないようにする
+  &.main {
+    justify-content: center;
+    min-width: 136px;
+    color: var(--on-acc);
+
+    app-icon {
+      color: inherit;
+    }
+  }
+
   &.run {
     border-color: var(--acc);
     background: var(--acc);
-    color: #fff;
 
-    &:hover:not(:disabled) {
-      background: #365f52;
+    &:hover:not(:disabled),
+    &:active:not(:disabled) {
+      background: var(--acc-hover);
     }
   }
 
   &.stop {
     border-color: var(--stop);
     background: var(--stop);
-    color: #fff;
+
+    &:hover:not(:disabled),
+    &:active:not(:disabled) {
+      background: #a63b34;
+    }
+  }
+}
+
+.live {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--s2);
+  font-size: var(--fs-s);
+}
+
+.live-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+}
+
+.live-step,
+.live-rest {
+  flex: none;
+  color: var(--t2);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.live-pct {
+  flex: none;
+  min-width: 40px;
+  color: var(--run);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+// 進捗は境界線の位置に重ねる。帯の高さを変えずに進み具合だけを見せる
+.track {
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 2px;
+
+  > i {
+    display: block;
+    height: 100%;
+    background: var(--run);
+    transition: width 200ms linear;
   }
 }
 
@@ -153,4 +247,8 @@ header {
 
 .detail {
   overflow-y: auto;
+}
+
+app-status-bar {
+  flex: none;
 }

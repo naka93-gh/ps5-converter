@@ -1,6 +1,7 @@
 :host {
   display: block;
-  padding: 18px 22px 24px;
+  max-width: 620px;
+  padding: 20px 22px 26px;
 }
 
 .title {
@@ -12,7 +13,7 @@
 h2 {
   margin: 0;
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: var(--fs-l);
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -20,60 +21,86 @@ h2 {
 }
 
 .sub {
-  margin: 3px 0 18px;
+  margin: 4px 0 0;
   color: var(--t2);
-  font-size: 12px;
+  font-size: var(--fs-s);
+
+  // 落ちた理由は本文に紛れさせない
+  &.bad {
+    margin-top: 9px;
+    padding: 8px 11px;
+    border-radius: var(--r-m);
+    background: var(--bad-bg);
+    color: var(--bad);
+  }
 }
 
 section {
-  margin-bottom: 20px;
+  margin-top: 22px;
 }
 
 h3 {
-  margin: 0 0 8px;
-  font-size: 11px;
+  margin: 0 0 9px;
+  font-size: var(--fs-xs);
   font-weight: 600;
-  letter-spacing: 0.09em;
   color: var(--t2);
 }
 
 .live {
-  margin-bottom: 20px;
+  margin-top: 18px;
 }
 
 .live-num {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
 }
 
 .pct {
   font-size: 26px;
   font-weight: 600;
+  line-height: 1.2;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
+  color: var(--run);
 }
 
 .at {
-  font-size: 11.5px;
+  font-size: var(--fs-s);
   color: var(--t2);
   font-variant-numeric: tabular-nums;
+}
+
+.track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--s3);
+  overflow: hidden;
+
+  > i {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    background: var(--run);
+    transition: width 200ms linear;
+  }
 }
 
 .checks {
   display: flex;
   flex-direction: column;
+  max-width: 460px;
 }
 
 .check {
   display: grid;
-  grid-template-columns: 16px 76px 1fr;
+  grid-template-columns: 14px 72px 1fr;
   gap: 10px;
   align-items: baseline;
   padding: 6px 0;
   border-bottom: 1px solid var(--line);
-  font-size: 12.5px;
+  font-size: var(--fs-s);
 
   .k {
     color: var(--t2);
@@ -81,73 +108,113 @@ h3 {
 
   .v {
     font-family: var(--font-mono);
-    font-size: 11.5px;
   }
-}
 
-.mark {
-  text-align: center;
-  font-weight: 700;
-  color: var(--ok);
+  .mark {
+    text-align: center;
+    font-weight: 700;
+    color: var(--ok);
+  }
 
-  &.bad {
+  &.bad .mark {
+    color: var(--bad);
+  }
+
+  &.bad .v {
     color: var(--bad);
   }
 }
 
+// 元と出力を隣り合わせて、変わった項目が拾えるようにする
 .compare {
-  dl {
-    display: grid;
-    grid-template-columns: 76px 1fr 1fr;
-    gap: 4px 14px;
-    margin: 0;
-    font-size: 12px;
+  max-width: 400px;
+  border-collapse: collapse;
+  font-size: var(--fs-s);
+
+  th,
+  td {
+    padding: 3px 0;
+    font-weight: inherit;
+    text-align: left;
   }
 
-  dt {
+  thead th {
+    padding-bottom: 5px;
+    color: var(--t2);
+    font-size: var(--fs-xs);
+  }
+
+  tbody th {
+    width: 72px;
     color: var(--t2);
   }
 
-  dd {
-    margin: 0;
+  td {
+    width: 128px;
     font-family: var(--font-mono);
-    font-size: 11.5px;
-    text-align: right;
   }
 
-  .hd {
-    color: var(--t2);
-    font-family: var(--font-ui);
-    font-size: 10.5px;
-    letter-spacing: 0.08em;
+  .arrow {
+    width: 22px;
+    color: var(--t3);
+    text-align: center;
   }
 }
 
 .paths {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  align-items: flex-start;
 }
 
+// パスは読んで写せる文字のまま置き、押せるのは右端のボタンだけにする
 .path {
-  max-width: 100%;
-  padding: 4px 9px;
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  background: var(--s2);
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-s);
+}
+
+// 上の表と同じ位置から値が始まるよう、間隔は空けずに幅で揃える
+.path-key {
+  flex: none;
+  width: 72px;
   color: var(--t2);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-align: left;
+}
+
+.path-val {
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.path-act {
+  flex: none;
+  margin-left: 12px;
+  padding: 3px 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-s);
+  background: var(--s);
+  font: inherit;
+  font-size: var(--fs-xs);
+  color: var(--t2);
   cursor: pointer;
+  transition:
+    border-color var(--ease),
+    color var(--ease),
+    background-color var(--ease);
 
   &:hover {
-    color: var(--t);
     border-color: var(--acc);
+    color: var(--acc);
+  }
+
+  &:active {
+    background: var(--s2);
   }
 
   &:focus-visible {
@@ -161,7 +228,7 @@ h3 {
   flex: none;
   padding: 1px 9px;
   border-radius: 10px;
-  font-size: 11.5px;
+  font-size: var(--fs-xs);
   white-space: nowrap;
 
   // 既定はmuted。色が付くtoneだけ上書きする
@@ -181,19 +248,5 @@ h3 {
   &.bad {
     background: var(--bad-bg);
     color: var(--bad);
-  }
-}
-
-.track {
-  height: 4px;
-  border-radius: 2px;
-  background: var(--s3);
-  overflow: hidden;
-
-  > i {
-    display: block;
-    height: 100%;
-    background: var(--run);
-    transition: width 120ms linear;
   }
 }

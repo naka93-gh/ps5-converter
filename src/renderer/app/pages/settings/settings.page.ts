@@ -2,12 +2,14 @@ import { Component, computed, inject, output, signal } from "@angular/core";
 import { BITRATE_RANGE, DEFAULT_CONFIG } from "@shared/types";
 import { ConfigService } from "../../shared/config.service";
 import { ConfigStore } from "../../shared/config.store";
+import { IconComponent } from "../../shared/icon/icon.component";
 
 /**
  * 設定ページ
  */
 @Component({
   selector: "app-settings-page",
+  imports: [IconComponent],
   templateUrl: "./settings.page.html",
   styleUrl: "./settings.page.scss",
 })

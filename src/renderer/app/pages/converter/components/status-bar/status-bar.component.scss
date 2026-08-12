@@ -1,0 +1,90 @@
+// 高さも文字も抑えて、目を向けたときだけ読めればよい情報として置く
+:host {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 24px;
+  padding: 0 12px;
+  border-top: 1px solid var(--line);
+  background: var(--s2);
+  font-size: var(--fs-xs);
+  line-height: 1;
+}
+
+// 段階ごとの件数を割合で見せる帯
+.bar {
+  flex: none;
+  display: flex;
+  gap: 2px;
+  width: 110px;
+  height: 4px;
+
+  > i {
+    border-radius: 2px;
+
+    &.done {
+      background: var(--ok);
+    }
+
+    &.pending {
+      background: var(--line);
+    }
+
+    &.ng {
+      background: var(--bad);
+    }
+
+    &.invalid {
+      background: var(--s3);
+    }
+  }
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--t2);
+
+  // 帯のどの色に対応するかを示す印
+  &::before {
+    content: "";
+    flex: none;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--line);
+  }
+
+  &.done::before {
+    background: var(--ok);
+  }
+
+  &.ng::before {
+    background: var(--bad);
+  }
+
+  &.invalid::before {
+    background: var(--s3);
+  }
+
+  // 数とラベルの差は大きさではなく太さで付ける
+  b {
+    font-weight: 600;
+    color: var(--t);
+    font-variant-numeric: tabular-nums;
+  }
+
+  // 0件は読み飛ばせるよう淡くする
+  &.zero {
+    color: var(--t3);
+
+    b {
+      color: var(--t3);
+    }
+
+    &::before {
+      background: var(--s3);
+    }
+  }
+}
