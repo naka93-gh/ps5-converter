@@ -1,0 +1,27 @@
+:host {
+  display: block;
+  height: 100vh;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--t);
+  background: var(--s);
+
+  --s: #ffffff;
+  --s2: #f5f6f7;
+  --s3: #edeef0;
+  --t: #1a1c1f;
+  --t2: #676c73;
+  --t3: #969ba1;
+  --line: #e2e4e7;
+  --acc: #3f6f5f;
+  --ok: #23663f;
+  --ok-bg: #dff0e6;
+  --run: #2b5f7d;
+  --run-bg: #e0edf3;
+  --bad: #97231f;
+  --bad-bg: #fbe1e0;
+  --stop: #b8443c;
+  --font-ui: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}

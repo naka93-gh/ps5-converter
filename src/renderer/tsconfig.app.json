@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../out-tsc/app",
+    "rootDir": "../..",
+    "types": [],
+    "noEmit": false,
+    "paths": { "@shared/*": ["../shared/*"] }
+  },
+  "angularCompilerOptions": {
+    "strictTemplates": true,
+    "strictInjectionParameters": true
+  },
+  "files": ["main.ts"],
+  "include": ["**/*.ts"]
+}

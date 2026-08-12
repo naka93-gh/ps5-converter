@@ -1,0 +1,36 @@
+{
+  "name": "ps5-converter",
+  "version": "0.1.0",
+  "description": "PS5の録画(webm)をHEVC 10bit HDRのMP4へ変換するコンバーター",
+  "private": true,
+  "main": "./out/main/index.js",
+  "packageManager": "pnpm@11.8.0",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p src/renderer/tsconfig.app.json",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --fix src/",
+    "format": "biome format --write src/"
+  },
+  "dependencies": {
+    "@angular/common": "^22.1.1",
+    "@angular/compiler": "^22.1.1",
+    "@angular/core": "^22.1.1",
+    "@angular/platform-browser": "^22.1.1",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@analogjs/vite-plugin-angular": "^2.6.4",
+    "@angular/build": "^22.1.1",
+    "@angular/compiler-cli": "^22.1.1",
+    "@biomejs/biome": "^2.5.8",
+    "@types/node": "^26.2.0",
+    "electron": "^43.4.0",
+    "electron-vite": "^5.0.0",
+    "sass": "^1.102.0",
+    "typescript": "^6.0.3",
+    "vite": "^7.3.6"
+  }
+}

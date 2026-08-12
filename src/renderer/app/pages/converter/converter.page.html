@@ -1,0 +1,91 @@
+<main>
+  <!-- ffmpegなど必須のバイナリが見つからない場合はエラー表示のみ -->
+  @if (store.binaryError()) {
+    <p class="alert">{{ store.binaryError() }}</p>
+  }
+
+  <!-- ヘッダーエリア -->
+  <!-- ディレクトリや変換状況を配置 -->
+  <header>
+    <div class="dirs">
+      <button
+        type="button"
+        class="dir"
+        [disabled]="store.busy()"
+        (click)="converter.pickDir('input')"
+      >
+        <span class="key">入力</span>
+        <span class="val" [class.unset]="!store.inputDir()"
+          >{{ store.inputDir() ?? "選ぶ" }}</span
+        >
+      </button>
+      <span class="arrow">→</span>
+      <button
+        type="button"
+        class="dir"
+        [disabled]="store.busy()"
+        (click)="converter.pickDir('output')"
+      >
+        <span class="key">出力</span>
+        <span class="val" [class.unset]="!store.outputDir()"
+          >{{ store.outputDir() ?? "選ぶ" }}</span
+        >
+      </button>
+    </div>
+
+    <div class="acts">
+      @if (store.notice()) {
+        <span class="notice">{{ store.notice() }}</span>
+      }
+
+      @if (store.converting()) {
+        @if (!store.canceling()) {
+          <span class="notice">のこり {{ remaining() }}</span>
+        }
+        <button
+          type="button"
+          class="btn stop"
+          [disabled]="store.canceling()"
+          (click)="converter.cancel()"
+        >
+          {{ store.canceling() ? "中断しています" : "中断する" }}
+        </button>
+      } @else {
+        <button
+          type="button"
+          class="btn"
+          [disabled]="!store.ready() || store.busy()"
+          (click)="converter.scan()"
+        >
+          読み込み直す
+        </button>
+        <button
+          type="button"
+          class="btn run"
+          [disabled]="
+            !store.ready() || store.busy() || store.counts().pending === 0
+          "
+          (click)="converter.convert()"
+        >
+          変換する（{{ store.counts().pending }}件）
+        </button>
+      }
+    </div>
+  </header>
+
+  <!-- コンテンツエリア -->
+  <div class="body">
+    <!-- 左ペインのファイルリスト -->
+    <app-file-list />
+
+    <!-- 右ペインのファイル詳細 -->
+    <!-- ファイルが未選択の場合は全体のサマリーを表示 -->
+    <div class="detail">
+      @if (store.selected(); as entry) {
+        <app-detail-panel [entry]="entry" />
+      } @else {
+        <app-summary-panel />
+      }
+    </div>
+  </div>
+</main>

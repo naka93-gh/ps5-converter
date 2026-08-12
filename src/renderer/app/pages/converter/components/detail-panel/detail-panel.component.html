@@ -1,0 +1,87 @@
+<div class="title">
+  <h2>{{ entry().name }}</h2>
+  <span class="pill" [class]="status().tone">{{ status().label }}</span>
+</div>
+<p class="sub">{{ subtitle() }}</p>
+
+@if (entry().status.phase === "converting") {
+  <div class="live">
+    <div class="live-num">
+      <span class="pct">{{ percent() }}%</span>
+      <span class="at">{{ elapsed() }} / {{ total() }}</span>
+    </div>
+    <div class="track"><i [style.width.%]="percent()"></i></div>
+  </div>
+}
+
+@if (verifyDetail(); as verify) {
+  <section>
+    <h3>検証</h3>
+    <div class="checks">
+      @for (check of verify.checks; track check.label) {
+        <div class="check">
+          <span class="mark" [class.bad]="!check.ok">{{
+            check.ok ? "✓" : "✕"
+          }}</span>
+          <span class="k">{{ check.label }}</span>
+          <span class="v">{{ check.detail }}</span>
+        </div>
+      }
+    </div>
+  </section>
+}
+
+<section>
+  <h3>元ファイルと出力</h3>
+  <div class="compare">
+    <dl>
+      <dt></dt>
+      <dd class="hd">元</dd>
+      <dd class="hd">出力</dd>
+
+      <dt>形式</dt>
+      <dd>{{ entry().input.info?.codecName || "-" }}</dd>
+      <dd>{{ entry().output.info?.codecName || "-" }}</dd>
+
+      <dt>解像度</dt>
+      <dd>{{ size(entry().input.info?.width, entry().input.info?.height) }}</dd>
+      <dd>
+        {{ size(entry().output.info?.width, entry().output.info?.height) }}
+      </dd>
+
+      <dt>HDR</dt>
+      <dd>{{ entry().input.info?.colorTransfer || "-" }}</dd>
+      <dd>{{ entry().output.info?.colorTransfer || "-" }}</dd>
+
+      <dt>尺</dt>
+      <dd>{{ formatDuration(entry().input.info?.durationSec) }}</dd>
+      <dd>{{ formatDuration(entry().output.info?.durationSec) }}</dd>
+
+      <dt>サイズ</dt>
+      <dd>{{ formatSize(entry().input.sizeBytes) }}</dd>
+      <dd>{{ formatSize(entry().output.sizeBytes) }}</dd>
+    </dl>
+  </div>
+</section>
+
+<section>
+  <h3>場所</h3>
+  <div class="paths">
+    <button
+      type="button"
+      class="path"
+      (click)="converter.reveal(entry().input.path)"
+    >
+      {{ entry().input.path }}
+    </button>
+    @if (entry().output.sizeBytes !== null) {
+      <button
+        type="button"
+        class="path"
+        (click)="converter.reveal(entry().output.path)"
+      >
+        {{ entry().output.path }}
+      </button>
+    }
+  </div>
+</section>

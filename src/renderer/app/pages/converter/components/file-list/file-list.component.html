@@ -1,0 +1,33 @@
+<div class="head">
+  {{ store.counts().all }}件
+  @if (store.counts().ng > 0) {
+    <span class="ng">要確認 {{ store.counts().ng }}</span>
+  }
+</div>
+
+<div class="list">
+  @for (entry of store.entries(); track entry.input.path) {
+    @let status = statusOf(entry);
+    <button
+      type="button"
+      class="row"
+      [class.sel]="entry.input.path === store.selectedPath()"
+      (click)="store.select(entry.input.path)"
+    >
+      <span
+        class="tick"
+        role="img"
+        [class]="status.tone"
+        [title]="status.label"
+        [attr.aria-label]="status.label"
+      ></span>
+      <span class="name">
+        <span class="head-part">{{ head(entry.name) }}</span
+        ><span class="tail-part">{{ tail(entry.name) }}</span>
+      </span>
+      <span class="right">{{ right(entry) }}</span>
+    </button>
+  } @empty {
+    <p class="empty">ファイルがありません</p>
+  }
+</div>

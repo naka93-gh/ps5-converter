@@ -1,0 +1,64 @@
+/**
+ * 秒を h:mm:ss にする
+ *
+ * @param seconds - 秒数
+ * @returns 「1:23:45」の形、尺が取れていないときは「-」
+ */
+export function formatDuration(seconds: number | null | undefined): string {
+  if (!seconds) return "-";
+  return hms(seconds);
+}
+
+/**
+ * 経過時間を h:mm:ss にする
+ *
+ * 尺と違い0にも意味があるので、始まったばかりでも0:00:00と出す
+ *
+ * @param seconds - 経過した秒数
+ * @returns 「0:12:34」の形
+ */
+export function formatElapsed(seconds: number): string {
+  return hms(Math.max(seconds, 0));
+}
+
+/**
+ * 秒をh:mm:ssへ組み立てる
+ *
+ * @param seconds - 秒数
+ * @returns 「1:23:45」の形
+ */
+function hms(seconds: number): string {
+  const total = Math.round(seconds);
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor((total % 3600) / 60);
+  const rest = total % 60;
+
+  return `${hours}:${String(minutes).padStart(2, "0")}:${String(rest).padStart(2, "0")}`;
+}
+
+/**
+ * バイト数を読みやすい単位にする
+ *
+ * @param bytes - バイト数
+ * @returns 1GB以上ならGB、それ未満はMB、取れていなければ「-」
+ */
+export function formatSize(bytes: number | null | undefined): string {
+  if (bytes === null || bytes === undefined) return "-";
+  if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toFixed(1)} GB`;
+  return `${Math.round(bytes / 1024 ** 2)} MB`;
+}
+
+/**
+ * 残り時間を丸めて出す
+ *
+ * @param seconds - 残りの秒数
+ * @returns 「25分」「1時間5分」の形
+ */
+export function formatRemaining(seconds: number): string {
+  if (seconds < 60) return "1分未満";
+
+  const minutes = Math.round(seconds / 60);
+  if (minutes < 60) return `${minutes}分`;
+
+  return `${Math.floor(minutes / 60)}時間${minutes % 60}分`;
+}
