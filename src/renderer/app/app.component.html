@@ -1,3 +1,10 @@
+@if (error.message(); as message) {
+  <p class="crash">
+    <span>{{ message }}</span>
+    <button type="button" (click)="error.dismiss()">閉じる</button>
+  </p>
+}
+
 @if (page() === "settings") {
   <app-settings-page (closed)="page.set('converter')" />
 } @else {

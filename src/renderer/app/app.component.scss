@@ -1,5 +1,6 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
   height: 100vh;
   font-family: var(--font-ui);
   font-size: 13px;
@@ -24,4 +25,37 @@
   --stop: #b8443c;
   --font-ui: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+app-converter-page,
+app-settings-page {
+  flex: 1;
+  min-height: 0;
+}
+
+.crash {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 9px 16px;
+  background: var(--bad-bg);
+  color: var(--bad);
+
+  span {
+    flex: 1;
+    min-width: 0;
+  }
+
+  button {
+    flex: none;
+    padding: 2px 10px;
+    border: 1px solid currentcolor;
+    border-radius: 4px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
 }
