@@ -1,39 +1,40 @@
 /**
- * 秒を h:mm:ss にする
+ * 秒を m:ss にする
  *
  * @param seconds - 秒数
- * @returns 「1:23:45」の形、尺が取れていないときは「-」
+ * @returns 「23:45」の形、尺が取れていないときは「-」
  */
 export function formatDuration(seconds: number | null | undefined): string {
   if (!seconds) return "-";
-  return hms(seconds);
+  return ms(seconds);
 }
 
 /**
- * 経過時間を h:mm:ss にする
+ * 経過時間を m:ss にする
  *
- * 尺と違い0にも意味があるので、始まったばかりでも0:00:00と出す
+ * 尺と違い0にも意味があるので、始まったばかりでも0:00と出す
  *
  * @param seconds - 経過した秒数
- * @returns 「0:12:34」の形
+ * @returns 「12:34」の形
  */
 export function formatElapsed(seconds: number): string {
-  return hms(Math.max(seconds, 0));
+  return ms(Math.max(seconds, 0));
 }
 
 /**
- * 秒をh:mm:ssへ組み立てる
+ * 秒をm:ssへ組み立てる
+ *
+ * PS5のビデオクリップは最長1時間なので、時間の桁は持たせず60分ちょうどは60:00と出す
  *
  * @param seconds - 秒数
- * @returns 「1:23:45」の形
+ * @returns 「23:45」の形
  */
-function hms(seconds: number): string {
+function ms(seconds: number): string {
   const total = Math.round(seconds);
-  const hours = Math.floor(total / 3600);
-  const minutes = Math.floor((total % 3600) / 60);
+  const minutes = Math.floor(total / 60);
   const rest = total % 60;
 
-  return `${hours}:${String(minutes).padStart(2, "0")}:${String(rest).padStart(2, "0")}`;
+  return `${minutes}:${String(rest).padStart(2, "0")}`;
 }
 
 /**
