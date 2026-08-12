@@ -43,18 +43,18 @@ header {
   padding: 5px 10px;
   border: 1px solid transparent;
   border-radius: var(--r-m);
-  background: var(--s2);
+  background: var(--surface);
   font: inherit;
   color: inherit;
   text-align: left;
   cursor: pointer;
   transition:
-    background-color var(--ease),
+    background-image var(--ease),
     border-color var(--ease);
 
   &:hover:not(:disabled) {
-    border-color: var(--line);
-    background: var(--s3);
+    border-color: var(--line-strong);
+    background: var(--surface-raised);
   }
 
   &:disabled {
@@ -62,7 +62,7 @@ header {
   }
 
   &:focus-visible {
-    outline: 2px solid var(--acc);
+    outline: 2px solid var(--ring-warm);
     outline-offset: 1px;
   }
 
@@ -117,16 +117,19 @@ header {
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
+  min-width: 96px;
   padding: 5px 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--r-m);
-  background: var(--s);
+  background: var(--surface);
   font: inherit;
   font-size: var(--fs-s);
   color: inherit;
   cursor: pointer;
   transition:
+    background-image var(--ease),
     background-color var(--ease),
     border-color var(--ease),
     opacity var(--ease);
@@ -136,11 +139,11 @@ header {
   }
 
   &:hover:not(:disabled) {
-    background: var(--s2);
+    background: var(--surface-raised);
   }
 
   &:active:not(:disabled) {
-    background: var(--s3);
+    background: var(--sunken);
   }
 
   &:disabled {
@@ -149,38 +152,35 @@ header {
   }
 
   &:focus-visible {
-    outline: 2px solid var(--acc);
+    outline: 2px solid var(--ring-warm);
     outline-offset: 1px;
   }
 
-  // 開始と中断は入れ替わるので、文言が変わっても幅が動かないようにする
   &.main {
-    justify-content: center;
-    min-width: 136px;
-    color: var(--on-acc);
-
     app-icon {
       color: inherit;
     }
   }
 
   &.run {
-    border-color: var(--acc);
-    background: var(--acc);
+    border-color: var(--light);
+    background: var(--light);
+    color: var(--on-light);
 
     &:hover:not(:disabled),
     &:active:not(:disabled) {
-      background: var(--acc-hover);
+      background: var(--light-hover);
     }
   }
 
   &.stop {
-    border-color: var(--stop);
-    background: var(--stop);
+    border-color: var(--danger);
+    background: var(--danger);
+    color: var(--t);
 
     &:hover:not(:disabled),
     &:active:not(:disabled) {
-      background: #a63b34;
+      background: var(--danger-hover);
     }
   }
 }
@@ -194,7 +194,7 @@ header {
   margin: 0;
   padding: 8px 16px;
   border-bottom: 1px solid var(--line);
-  background: var(--s2);
+  background: var(--surface);
   font-size: var(--fs-s);
 }
 

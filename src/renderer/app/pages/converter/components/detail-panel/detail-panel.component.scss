@@ -25,7 +25,6 @@ h2 {
   color: var(--t2);
   font-size: var(--fs-s);
 
-  // 落ちた理由は本文に紛れさせない
   &.bad {
     margin-top: 9px;
     padding: 8px 11px;
@@ -75,7 +74,7 @@ h3 {
 .track {
   height: 6px;
   border-radius: 3px;
-  background: var(--s3);
+  background: var(--sunken);
   overflow: hidden;
 
   > i {
@@ -125,7 +124,6 @@ h3 {
   }
 }
 
-// 元と出力を隣り合わせて、変わった項目が拾えるようにする
 .compare {
   max-width: 400px;
   border-collapse: collapse;
@@ -166,7 +164,6 @@ h3 {
   flex-direction: column;
 }
 
-// パスは読んで写せる文字のまま置き、押せるのは右端のボタンだけにする
 .path {
   display: flex;
   align-items: center;
@@ -175,7 +172,6 @@ h3 {
   font-size: var(--fs-s);
 }
 
-// 上の表と同じ位置から値が始まるよう、間隔は空けずに幅で揃える
 .path-key {
   flex: none;
   width: 72px;
@@ -196,9 +192,9 @@ h3 {
   flex: none;
   margin-left: 12px;
   padding: 3px 9px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--r-s);
-  background: var(--s);
+  background: var(--fill);
   font: inherit;
   font-size: var(--fs-xs);
   color: var(--t2);
@@ -209,16 +205,16 @@ h3 {
     background-color var(--ease);
 
   &:hover {
-    border-color: var(--acc);
-    color: var(--acc);
+    border-color: var(--ring-warm);
+    color: var(--ring-warm);
   }
 
   &:active {
-    background: var(--s2);
+    background: var(--sunken);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--acc);
+    outline: 2px solid var(--ring-warm);
     outline-offset: 1px;
   }
 }
@@ -232,7 +228,7 @@ h3 {
   white-space: nowrap;
 
   // 既定はmuted。色が付くtoneだけ上書きする
-  background: var(--s3);
+  background: var(--fill);
   color: var(--t2);
 
   &.ok {

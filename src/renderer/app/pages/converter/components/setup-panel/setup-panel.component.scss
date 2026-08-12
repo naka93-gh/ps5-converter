@@ -35,24 +35,25 @@
   align-items: center;
   gap: 9px;
   padding: 10px 12px;
-  border: 1px solid var(--line);
+
+  border: 1px solid transparent;
   border-radius: var(--r-l);
-  background: var(--s2);
+  background: var(--surface);
   font: inherit;
   color: inherit;
   text-align: left;
   cursor: pointer;
   transition:
     border-color var(--ease),
-    background-color var(--ease);
+    background-image var(--ease);
 
   &:hover {
-    border-color: var(--acc);
-    background: var(--s3);
+    border-color: var(--line-strong);
+    background: var(--surface-raised);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--acc);
+    outline: 2px solid var(--ring-warm);
     outline-offset: 1px;
   }
 

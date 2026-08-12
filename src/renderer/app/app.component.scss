@@ -6,25 +6,47 @@
   font-size: var(--fs-m);
   line-height: 1.6;
   color: var(--t);
-  background: var(--s);
+  background-color: var(--s);
+  background-image: var(--glow);
 
-  --s: #ffffff;
-  --s2: #f5f6f7;
-  --s3: #edeef0;
-  --t: #1a1c1f;
-  --t2: #676c73;
-  --t3: #969ba1;
-  --line: #e2e4e7;
-  --acc: #3f6f5f;
-  --acc-hover: #365f52;
-  --on-acc: #ffffff;
-  --ok: #23663f;
-  --ok-bg: #dff0e6;
-  --run: #2b5f7d;
-  --run-bg: #e0edf3;
-  --bad: #97231f;
-  --bad-bg: #fbe1e0;
-  --stop: #b8443c;
+  color-scheme: dark;
+
+  --s: #0c0e1a;
+  --glow:
+    radial-gradient(60% 55% at 14% -5%, rgb(120 102 100 / 85%) 0%, transparent 70%),
+    radial-gradient(70% 40% at 30% 105%, rgb(90 92 100 / 45%) 0%, transparent 70%);
+
+  --surface: linear-gradient(90deg, rgb(255 255 255 / 7%) 0%, rgb(255 255 255 / 1%) 100%);
+  --surface-raised: linear-gradient(90deg, rgb(255 255 255 / 11%) 0%, rgb(255 255 255 / 3%) 100%);
+  --fill: rgb(255 255 255 / 8%);
+  --sunken: rgb(0 0 0 / 25%);
+
+  --row-hover: rgb(255 255 255 / 5%);
+
+  --t: #ffffff;
+  --t2: #958b8a;
+  --t3: rgb(255 255 255 / 45%);
+
+  --light: #ffffff;
+  --light-hover: rgb(255 255 255 / 86%);
+  --on-light: #0c0e1a;
+
+  --line: rgb(255 255 255 / 7%);
+  --line-strong: rgb(255 255 255 / 14%);
+
+  --ring: linear-gradient(115deg, #d1b6a3 0%, #a496a5 45%, #74768b 100%);
+  --ring-warm: #d1b6a3;
+  --ring-w: 2px;
+  --ring-fill: rgb(255 255 255 / 6%);
+
+  --run: #d1b6a3;
+  --run-bg: rgb(209 182 163 / 14%);
+  --ok: #6bd6a4;
+  --ok-bg: rgb(107 214 164 / 12%);
+  --bad: #e8697a;
+  --bad-bg: rgb(232 105 122 / 14%);
+  --danger: #d4515f;
+  --danger-hover: #e05f6c;
   --font-ui: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 
@@ -48,6 +70,13 @@ app-converter-page,
 app-settings-page {
   flex: 1;
   min-height: 0;
+}
+
+// 信号機ボタンと同じ高さを保持
+.titlebar {
+  flex: none;
+  height: 28px;
+  -webkit-app-region: drag;
 }
 
 .crash {
@@ -78,7 +107,7 @@ app-settings-page {
     transition: background-color var(--ease);
 
     &:hover {
-      background: rgb(255 255 255 / 55%);
+      background: rgb(255 255 255 / 10%);
     }
 
     &:focus-visible {

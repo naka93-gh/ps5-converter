@@ -27,6 +27,10 @@ export class WindowManager {
       width: 1000,
       height: 700,
       show: false,
+      backgroundColor: "#0c0e1a",
+
+      // タイトルバーを外してヘッダーを上端まで広げる
+      titleBarStyle: "hiddenInset",
       webPreferences: {
         preload: join(__dirname, "../preload/index.js"),
         sandbox: false,

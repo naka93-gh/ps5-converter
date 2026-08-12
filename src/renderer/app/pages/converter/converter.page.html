@@ -75,7 +75,7 @@
           (click)="converter.cancel()"
         >
           <app-icon name="stop" />
-          {{ store.canceling() ? "中断しています" : "中断する" }}
+          {{ store.canceling() ? "中断中…" : "中断する" }}
         </button>
       } @else {
         <button

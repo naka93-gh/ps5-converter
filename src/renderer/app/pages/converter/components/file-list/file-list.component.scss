@@ -3,7 +3,7 @@
   flex-direction: column;
   min-height: 0;
   border-right: 1px solid var(--line);
-  background: var(--s2);
+  background: var(--surface);
 }
 
 .head {
@@ -37,17 +37,29 @@
   transition: background-color var(--ease);
 
   &:hover:not(.sel) {
-    background: var(--s3);
+    background: var(--row-hover);
   }
 
   &.sel {
-    background: var(--s);
-    box-shadow: inset 2px 0 0 var(--acc);
+    background: var(--ring-fill);
+  }
+
+  &.sel::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 -1px;
+    padding: var(--ring-w);
+    background: var(--ring);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
   }
 
   &:focus-visible {
-    outline: 2px solid var(--acc);
-    outline-offset: -2px;
+    outline: 2px solid var(--ring-warm);
+    outline-offset: -3px;
   }
 }
 
@@ -113,9 +125,9 @@
   }
 }
 
-// 行の高さを変えずに進み具合を出すため、下辺の罫線に重ねる
 .track {
   position: absolute;
+  z-index: 1;
   inset: auto 0 -1px;
   height: 2px;
 

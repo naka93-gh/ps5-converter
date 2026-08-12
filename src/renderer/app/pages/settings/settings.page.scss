@@ -76,7 +76,7 @@ h2 {
   cursor: pointer;
 
   input {
-    accent-color: var(--acc);
+    accent-color: var(--ring-warm);
     cursor: pointer;
   }
 }
@@ -103,9 +103,9 @@ input[type="number"],
 input[type="text"] {
   width: 96px;
   padding: 5px 9px 5px 29px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--r-m);
-  background: var(--s);
+  background: var(--sunken);
   font: inherit;
   font-family: var(--font-mono);
   font-size: var(--fs-s);
@@ -121,7 +121,7 @@ input[type="text"] {
   }
 
   &:focus-visible {
-    outline: 2px solid var(--acc);
+    outline: 2px solid var(--ring-warm);
     outline-offset: 1px;
   }
 
@@ -158,24 +158,25 @@ footer {
   align-items: center;
   gap: 6px;
   padding: 5px 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--r-m);
-  background: var(--s);
+  background: var(--surface);
   font: inherit;
   font-size: var(--fs-s);
   color: inherit;
   cursor: pointer;
   transition:
+    background-image var(--ease),
     background-color var(--ease),
     border-color var(--ease),
     opacity var(--ease);
 
   &:hover:not(:disabled) {
-    background: var(--s2);
+    background: var(--surface-raised);
   }
 
   &:active:not(:disabled) {
-    background: var(--s3);
+    background: var(--sunken);
   }
 
   &:disabled {
@@ -184,31 +185,41 @@ footer {
   }
 
   &:focus-visible {
-    outline: 2px solid var(--acc);
+    outline: 2px solid var(--ring-warm);
     outline-offset: 1px;
   }
 
-  // 画面を離れる操作と初期化は、押し間違えないよう枠を外して引いた見た目にする
-  &.back,
-  &.reset {
+  &.back {
     padding-left: 8px;
     border-color: transparent;
-    color: var(--t2);
   }
 
   &.reset {
     margin-right: auto;
   }
 
+  &.back,
+  &.reset {
+    background: none;
+    color: var(--t2);
+
+    &:hover:not(:disabled) {
+      background: var(--fill);
+    }
+
+    &:active:not(:disabled) {
+      background: var(--sunken);
+    }
+  }
+
   &.save {
-    min-width: 96px;
-    border-color: var(--acc);
-    background: var(--acc);
-    color: var(--on-acc);
+    border-color: var(--light);
+    background: var(--light);
+    color: var(--on-light);
 
     &:hover:not(:disabled),
     &:active:not(:disabled) {
-      background: var(--acc-hover);
+      background: var(--light-hover);
     }
   }
 }
