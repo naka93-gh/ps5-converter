@@ -1,5 +1,7 @@
 import { Injectable, inject } from "@angular/core";
 import type { FileEntry } from "@shared/types";
+import { ConfigService } from "../../shared/config.service";
+import { ConfigStore } from "../../shared/config.store";
 import { isWaiting, needsVerify } from "../../shared/entry";
 import { ConverterStore } from "./store/converter.store";
 
@@ -9,6 +11,13 @@ import { ConverterStore } from "./store/converter.store";
 @Injectable({ providedIn: "root" })
 export class ConverterService {
   private readonly store = inject(ConverterStore);
+  private readonly config = inject(ConfigStore);
+  private readonly configService = inject(ConfigService);
+
+  /**
+   * 起動後に一度でも初期化したか
+   */
+  private initialized = false;
 
   constructor() {
     // 変換中の進捗だけはmainから押し出されてくるので購読する
@@ -19,20 +28,13 @@ export class ConverterService {
    * 初期化処理
    */
   async init(): Promise<void> {
-    // ffmpegの有無を確認
-    // もしインストールされていない場合は何もできないのでエラーメッセージだけ出す
-    const binaries = await window.api.checkBinaries();
-    if (!binaries.ffmpeg || !binaries.ffprobe) {
-      this.store.binaryError.set("ffmpegが見つかりません");
-    }
+    if (this.initialized) return;
+    this.initialized = true;
 
-    // Configを読み込む
-    // 現在は前回開いていたディレクトリしかないので、その内容を反映
-    const config = await window.api.loadConfig();
-    this.store.inputDir.set(config.inputDir);
-    this.store.outputDir.set(config.outputDir);
+    // 前回の設定を画面へ戻し、ffmpegの有無も見る
+    await this.configService.load();
 
-    if (this.store.ready()) await this.scan();
+    if (this.config.ready()) await this.scan();
   }
 
   /**
@@ -41,23 +43,18 @@ export class ConverterService {
    * @param kind - 入力と出力のどちらを選ぶか
    */
   async pickDir(kind: "input" | "output"): Promise<void> {
-    const target = kind === "input" ? this.store.inputDir : this.store.outputDir;
-    const picked = await window.api.selectDir(target());
+    const picked = await this.configService.pickDir(kind);
     if (!picked) return;
 
-    // 次回の起動で復元できるよう、選んだ時点で残す
-    target.set(picked);
-    await window.api.saveConfig({ inputDir: this.store.inputDir(), outputDir: this.store.outputDir() });
-
-    if (this.store.ready()) await this.scan();
+    if (this.config.ready()) await this.scan();
   }
 
   /**
    * 入力ディレクトリを読み直して一覧を作る
    */
   async scan(): Promise<void> {
-    const inputDir = this.store.inputDir();
-    const outputDir = this.store.outputDir();
+    const inputDir = this.config.inputDir();
+    const outputDir = this.config.outputDir();
     if (!inputDir || !outputDir) return;
 
     this.store.scanning.set(true);

@@ -6,8 +6,12 @@ import type { BinaryStatus } from "@shared/types";
  * バイナリ探索ディレクトリの候補
  * Finderから起動したアプリのPATHは/usr/bin程度しかなく、Homebrewの場所が含まれないのでこちらで補完
  */
-// TODO: バイナリパスは設定ファイルで差し替えられるようにしたい
 const CANDIDATE_DIRS = ["/opt/homebrew/bin", "/usr/local/bin", "/usr/bin", "/bin"];
+
+/**
+ * 探すバイナリの名前
+ */
+type BinaryName = keyof BinaryStatus;
 
 /**
  * ffmpeg/ffprobeのパスを解決するためのシングルトン
@@ -18,6 +22,22 @@ export class BinaryPaths {
    * 見つからなかったことも覚えるため値はnullを許容
    */
   private readonly cache = new Map<string, string | null>();
+
+  /**
+   * 設定で指定されたパス
+   * 値があれば探索より優先する
+   */
+  private overrides: BinaryStatus = { ffmpeg: null, ffprobe: null };
+
+  /**
+   * 手動で指定されたパスを取り込む
+   *
+   * @param overrides - 設定のパス。指定なしはnull
+   */
+  setOverrides(overrides: BinaryStatus): void {
+    this.overrides = overrides;
+    this.cache.clear();
+  }
 
   /**
    * ffmpegとffprobeが揃っているかを調べる
@@ -34,7 +54,7 @@ export class BinaryPaths {
    * @param name - 探すバイナリ名
    * @returns 見つかった絶対パス
    */
-  get(name: "ffmpeg" | "ffprobe"): string {
+  get(name: BinaryName): string {
     const path = this.find(name);
     if (!path) {
       throw new Error(`${name}が見つかりません`);
@@ -48,7 +68,12 @@ export class BinaryPaths {
    * @param name - 探すバイナリ名
    * @returns 見つかればパス、見つからなければnull
    */
-  find(name: string): string | null {
+  find(name: BinaryName): string | null {
+    // 手動で指定されたパスは探索より優先
+    // 実在しなければ見つからない扱いにして警告にとどめる
+    const override = this.overrides[name];
+    if (override) return existsSync(override) ? override : null;
+
     // キャッシュにあるなら検索せずキャッシュの内容で返す
     const cached = this.cache.get(name);
     if (cached !== undefined) return cached;

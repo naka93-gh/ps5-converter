@@ -1,7 +1,7 @@
 <main>
   <!-- ffmpegなど必須のバイナリが見つからない場合はエラー表示のみ -->
-  @if (store.binaryError()) {
-    <p class="alert">{{ store.binaryError() }}</p>
+  @if (config.binaryError()) {
+    <p class="alert">{{ config.binaryError() }}</p>
   }
 
   <!-- ヘッダーエリア -->
@@ -15,8 +15,8 @@
         (click)="converter.pickDir('input')"
       >
         <span class="key">入力</span>
-        <span class="val" [class.unset]="!store.inputDir()"
-          >{{ store.inputDir() ?? "選ぶ" }}</span
+        <span class="val" [class.unset]="!config.inputDir()"
+          >{{ config.inputDir() ?? "選ぶ" }}</span
         >
       </button>
       <span class="arrow">→</span>
@@ -27,13 +27,22 @@
         (click)="converter.pickDir('output')"
       >
         <span class="key">出力</span>
-        <span class="val" [class.unset]="!store.outputDir()"
-          >{{ store.outputDir() ?? "選ぶ" }}</span
+        <span class="val" [class.unset]="!config.outputDir()"
+          >{{ config.outputDir() ?? "選ぶ" }}</span
         >
       </button>
     </div>
 
     <div class="acts">
+      <button
+        type="button"
+        class="btn"
+        [disabled]="store.busy()"
+        (click)="settingsRequested.emit()"
+      >
+        設定
+      </button>
+
       @if (store.notice()) {
         <span class="notice">{{ store.notice() }}</span>
       }
@@ -54,7 +63,7 @@
         <button
           type="button"
           class="btn"
-          [disabled]="!store.ready() || store.busy()"
+          [disabled]="!config.ready() || store.busy()"
           (click)="converter.scan()"
         >
           読み込み直す
@@ -63,7 +72,7 @@
           type="button"
           class="btn run"
           [disabled]="
-            !store.ready() || store.busy() || store.counts().pending === 0
+            !config.ready() || store.busy() || store.counts().pending === 0
           "
           (click)="converter.convert()"
         >

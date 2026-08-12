@@ -1,7 +1,7 @@
 import { type ChildProcess, spawn } from "node:child_process";
 import { rename, rm } from "node:fs/promises";
 import { binaryPaths } from "./binary-paths";
-import { buildEncodeArgs } from "./encode-args";
+import { buildEncodeArgs, type EncodeBitrate } from "./encode-args";
 
 /**
  * stderrから残す長さ
@@ -36,18 +36,20 @@ export class Encoder {
    * @param inputPath - 変換元のwebm
    * @param outputPath - 書き出し先のmp4
    * @param durationSec - 元ファイルの尺。渡したときだけ進捗を通知する
+   * @param bitrate - ビットレート
    * @param onProgress - 進捗を0〜1で受け取る関数
    */
   async encode(
     inputPath: string,
     outputPath: string,
     durationSec: number | undefined,
+    bitrate: EncodeBitrate,
     onProgress: (progress: number) => void,
   ): Promise<void> {
     const ffmpeg = binaryPaths.get("ffmpeg");
     const partPath = `${outputPath}.part`;
 
-    const child = spawn(ffmpeg, buildEncodeArgs(inputPath, partPath), { stdio: ["ignore", "pipe", "pipe"] });
+    const child = spawn(ffmpeg, buildEncodeArgs(inputPath, partPath, bitrate), { stdio: ["ignore", "pipe", "pipe"] });
     this.currentChild = child;
 
     // 失敗した理由を出すのに使う

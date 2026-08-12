@@ -1,4 +1,5 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, output } from "@angular/core";
+import { ConfigStore } from "../../shared/config.store";
 import { formatRemaining } from "../../shared/format";
 import { DetailPanelComponent } from "./components/detail-panel/detail-panel.component";
 import { FileListComponent } from "./components/file-list/file-list.component";
@@ -17,7 +18,11 @@ import { ConverterStore } from "./store/converter.store";
 })
 export class ConverterPage {
   readonly store = inject(ConverterStore);
+  readonly config = inject(ConfigStore);
   readonly converter = inject(ConverterService);
+
+  /** 設定画面リクエスト */
+  readonly settingsRequested = output<void>();
 
   constructor() {
     // 画面を開いた時点でffmpegの確認と前回のディレクトリの読み込みを始める

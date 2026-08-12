@@ -1,0 +1,109 @@
+<main>
+  <!-- ヘッダーエリア -->
+  <!-- 変換画面と高さを揃える -->
+  <header>
+    <button type="button" class="btn back" (click)="closed.emit()">
+      ← 変換画面へ
+    </button>
+    <h1>設定</h1>
+  </header>
+
+  <!-- コンテンツエリア -->
+  <div class="body">
+    <!-- 画質 -->
+    <!-- クロップとHDR系は検証の期待値と揃える必要があるため出さない -->
+    <section>
+      <h2>画質</h2>
+      <label class="row">
+        <span class="key">映像</span>
+        <input
+          type="number"
+          [value]="videoBitrateMbps()"
+          [attr.min]="range.video.min"
+          [attr.max]="range.video.max"
+          (input)="videoBitrateMbps.set(textOf($event))"
+        />
+        <span class="unit">Mbps</span>
+      </label>
+      <label class="row">
+        <span class="key">音声</span>
+        <input
+          type="number"
+          [value]="audioBitrateKbps()"
+          [attr.min]="range.audio.min"
+          [attr.max]="range.audio.max"
+          (input)="audioBitrateKbps.set(textOf($event))"
+        />
+        <span class="unit">kbps</span>
+      </label>
+      <p class="note">
+        映像は{{ range.video.min }}〜{{ range.video.max }}Mbps、音声は{{ range.audio.min }}〜{{ range.audio.max }}kbpsの範囲で設定してください。<br />
+        変換の途中で変更した場合は、次のファイルの変換から反映されます。
+      </p>
+    </section>
+
+    <!-- ffmpegの場所 -->
+    <!-- 自分で指定するときだけ入力欄を出す -->
+    <section>
+      <h2>ffmpegの場所</h2>
+      <div class="choices">
+        <label class="choice">
+          <input
+            type="radio"
+            name="binary-mode"
+            [checked]="binaryMode() === 'auto'"
+            (change)="binaryMode.set('auto')"
+          />
+          <span>自動で探す</span>
+        </label>
+        <label class="choice">
+          <input
+            type="radio"
+            name="binary-mode"
+            [checked]="binaryMode() === 'manual'"
+            (change)="binaryMode.set('manual')"
+          />
+          <span>自分で指定する</span>
+        </label>
+      </div>
+
+      @if (binaryMode() === "manual") {
+        <label class="row">
+          <span class="key">ffmpeg</span>
+          <input
+            type="text"
+            class="path"
+            spellcheck="false"
+            placeholder="/opt/homebrew/bin/ffmpeg"
+            [value]="ffmpegPath()"
+            (input)="ffmpegPath.set(textOf($event))"
+          />
+        </label>
+        <label class="row">
+          <span class="key">ffprobe</span>
+          <input
+            type="text"
+            class="path"
+            spellcheck="false"
+            placeholder="/opt/homebrew/bin/ffprobe"
+            [value]="ffprobePath()"
+            (input)="ffprobePath.set(textOf($event))"
+          />
+        </label>
+        <p class="note">絶対パスで指定してください。</p>
+      } @else {
+        <p class="note">Homebrewの場所とPATHから順に探します</p>
+      }
+    </section>
+  </div>
+
+  <!-- フッターエリア -->
+  <footer>
+    <button type="button" class="btn reset" (click)="reset()">
+      デフォルトに戻す
+    </button>
+    <button type="button" class="btn save" [disabled]="!valid()" (click)="save()">
+      保存する
+    </button>
+  </footer>
+</main>

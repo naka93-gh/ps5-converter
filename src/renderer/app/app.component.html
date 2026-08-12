@@ -1,1 +1,5 @@
-<app-converter-page />
+@if (page() === "settings") {
+  <app-settings-page (closed)="page.set('converter')" />
+} @else {
+  <app-converter-page (settingsRequested)="page.set('settings')" />
+}

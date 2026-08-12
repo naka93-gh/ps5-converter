@@ -1,4 +1,5 @@
 import { Component, computed, inject } from "@angular/core";
+import { ConfigStore } from "../../../../shared/config.store";
 import { needsAttention, reasonOf } from "../../../../shared/entry";
 import { formatRemaining } from "../../../../shared/format";
 import { ConverterStore } from "../../store/converter.store";
@@ -15,6 +16,7 @@ import { ConverterStore } from "../../store/converter.store";
 })
 export class SummaryPanelComponent {
   readonly store = inject(ConverterStore);
+  readonly config = inject(ConfigStore);
 
   protected readonly formatRemaining = formatRemaining;
   protected readonly reasonOf = reasonOf;

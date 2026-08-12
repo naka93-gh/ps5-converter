@@ -1,4 +1,5 @@
 import type { FileEntry, ProgressPayload } from "@shared/types";
+import { loadConfig } from "../infra/config";
 import { encoder } from "../infra/ffmpeg/encoder";
 
 /**
@@ -21,8 +22,11 @@ export async function convertOne(
   onProgress: (payload: ProgressPayload) => void,
 ): Promise<string | null> {
   try {
+    // 変換途中で設定が変更された場合でも次の変換から反映できるように1件ごとにConfigを読み込む
+    const config = await loadConfig();
+
     // どのファイルの進捗かをレンダラー側で必要とするので、パスを付与
-    await encoder.encode(entry.input.path, entry.output.path, entry.input.info?.durationSec, (progress) =>
+    await encoder.encode(entry.input.path, entry.output.path, entry.input.info?.durationSec, config, (progress) =>
       onProgress({ inputPath: entry.input.path, progress }),
     );
     return null;

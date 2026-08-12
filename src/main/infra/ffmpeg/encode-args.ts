@@ -1,11 +1,19 @@
+import type { AppConfig } from "@shared/types";
+
+/**
+ * 引数の組み立てに使う設定
+ */
+export type EncodeBitrate = Pick<AppConfig, "videoBitrateMbps" | "audioBitrateKbps">;
+
 /**
  * ffmpegへ渡す引数を組み立てる
  *
  * @param inputPath - 変換元のwebm
  * @param partPath - 書き出し先の.part
+ * @param bitrate - 設定から読んだビットレート
  * @returns 引数の並び
  */
-export function buildEncodeArgs(inputPath: string, partPath: string): string[] {
+export function buildEncodeArgs(inputPath: string, partPath: string, bitrate: EncodeBitrate): string[] {
   return [
     "-nostdin",
     "-hide_banner",
@@ -26,7 +34,7 @@ export function buildEncodeArgs(inputPath: string, partPath: string): string[] {
     "-pix_fmt",
     "p010le",
     "-b:v",
-    "18M",
+    `${bitrate.videoBitrateMbps}M`,
     "-tag:v",
     "hvc1",
 
@@ -43,7 +51,7 @@ export function buildEncodeArgs(inputPath: string, partPath: string): string[] {
     "-c:a",
     "aac",
     "-b:a",
-    "256k",
+    `${bitrate.audioBitrateKbps}k`,
     "-movflags",
     "+faststart",
 

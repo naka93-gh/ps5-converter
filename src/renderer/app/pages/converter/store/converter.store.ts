@@ -20,16 +20,6 @@ export class ConverterStore {
   private readonly _entries = signal<FileEntry[]>([]);
 
   /**
-   * 入力ディレクトリ
-   */
-  readonly inputDir = signal<string | null>(null);
-
-  /**
-   * 出力ディレクトリ
-   */
-  readonly outputDir = signal<string | null>(null);
-
-  /**
    * 一覧
    * 外部から直接書き換えられないよう読み取り専用
    */
@@ -61,11 +51,6 @@ export class ConverterStore {
   readonly notice = signal("");
 
   /**
-   * ffmpegが見つからないときの警告。空なら正常
-   */
-  readonly binaryError = signal("");
-
-  /**
    * 詳細に出す1件。未選択ならnull
    */
   readonly selected = computed(() => this.entries().find((entry) => entry.input.path === this.selectedPath()) ?? null);
@@ -84,16 +69,6 @@ export class ConverterStore {
       invalid: entries.filter((entry) => entry.status.phase === "skipped").length,
     };
   });
-
-  /**
-   * 入力と出力がどちらも選ばれているか
-   */
-  readonly dirsChosen = computed(() => Boolean(this.inputDir() && this.outputDir()));
-
-  /**
-   * 変換を始められるか。入出力が揃っていてffmpegがあること
-   */
-  readonly ready = computed(() => this.dirsChosen() && !this.binaryError());
 
   /**
    * 走査中か変換中か。操作を止めるのに使う

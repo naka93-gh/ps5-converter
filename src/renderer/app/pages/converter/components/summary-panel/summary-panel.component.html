@@ -6,7 +6,7 @@
     } @else if (store.converting()) {
       <span class="big">{{ formatRemaining(store.remainingSec()) }}</span>
       <span class="cap">のこり</span>
-    } @else if (!store.dirsChosen()) {
+    } @else if (!config.dirsChosen()) {
       <span class="big">ディレクトリを選んでください</span>
       <span class="cap">入力と出力を決めると読み込みが始まります</span>
     } @else if (store.counts().all === 0) {

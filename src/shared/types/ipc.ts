@@ -1,12 +1,44 @@
 import type { FileEntry, MediaFile, VerifyDetail } from "./entry";
 
 /**
- * 次回の起動へ持ち越す設定
+ * アプリ設定
  */
 export interface AppConfig {
+  /** 入力ディレクトリ */
   inputDir: string | null;
+  /** 出力ディレクトリ */
   outputDir: string | null;
+  /** 映像のビットレート(Mbps) */
+  videoBitrateMbps: number;
+  /** 音声のビットレート(kbps) */
+  audioBitrateKbps: number;
+  /** ffmpegの実行ファイル(指定されているときのみ設定) */
+  ffmpegPath: string | null;
+  /** ffprobeの実行ファイル(指定されているときのみ設定) */
+  ffprobePath: string | null;
 }
+
+/**
+ * アプリ設定の初期値
+ */
+export const DEFAULT_CONFIG: Readonly<AppConfig> = {
+  inputDir: null,
+  outputDir: null,
+  videoBitrateMbps: 18,
+  audioBitrateKbps: 256,
+  ffmpegPath: null,
+  ffprobePath: null,
+};
+
+/**
+ * ビットレートの許可範囲
+ */
+export const BITRATE_RANGE = {
+  // 映像ビットレート
+  video: { min: 1, max: 100 },
+  // 音声ビットレート
+  audio: { min: 32, max: 512 },
+} as const;
 
 /**
  * ffmpeg/ffprobeのステータス
