@@ -2,6 +2,8 @@
 
 PS5の録画ファイル(webm)をMP4に変換するデスクトップアプリです。
 
+<img src="docs/images/converting.png" width="800" alt="変換中の画面">
+
 ## 必要なもの
 
 - macOS (ハードウェアエンコードにVideoToolboxを使うため、動作対象はmacOSのみ)
