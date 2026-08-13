@@ -1,10 +1,12 @@
 import { app, BrowserWindow } from "electron";
 import { registerIpc } from "./ipc";
+import { setupMenu } from "./menu";
 import { cancel } from "./service/convert";
 import { windowManager } from "./window";
 
-// IPCの登録を先に済ませてからウィンドウを開く
+// メニューの差し替えとIPCの登録を先に済ませてからウィンドウを開く
 app.whenReady().then(() => {
+  setupMenu();
   registerIpc();
   windowManager.create();
 });
